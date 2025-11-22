@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-vars-pro",
-	"version": "0.2.0",
+	"version": "0.5.1",
 	"description": "n8n nodes for storing and reading local JSON file data with execution-level and workflow-level support",
 	"license": "MIT",
 	"homepage": "",
@@ -29,7 +29,8 @@
 		"prepublishOnly": "n8n-node prerelease"
 	},
 	"files": [
-		"dist"
+		"dist",
+		"templates"
 	],
 	"n8n": {
 		"n8nNodesApiVersion": 1,

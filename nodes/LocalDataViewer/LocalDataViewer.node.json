@@ -8,6 +8,12 @@
 			{
 				"url": "https://github.com/org/repo?tab=readme-ov-file"
 			}
+		],
+		"starterTemplate": [
+			{
+				"name": "Vars Pro Viewer Template",
+				"file": "templates/starter-template.json"
+			}
 		]
 	}
 }

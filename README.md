@@ -1,8 +1,52 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-vars-pro
 
-# n8n-nodes-starter
+Vars Pro - n8n 节点包，用于存储和读取本地 JSON 文件数据，支持执行级别和工作流级别的数据管理。
 
-This starter repository helps you build custom integrations for [n8n](https://n8n.io). It includes example nodes, credentials, the node linter, and all the tooling you need to get started.
+## 功能特性
+
+- 📦 **Vars Pro Storage**: 存储和读取本地 JSON 文件数据
+  - 执行级别数据：每个执行创建独立的 JSON 文件
+  - 工作流级别数据：工作流共享的 JSON 文件
+  - 支持设置、读取、删除操作
+  - 支持嵌套键路径（如 `user.name`）
+
+- 📊 **Vars Pro Viewer**: 实时数据查看器
+  - 现代化的表格 UI 设计
+  - 搜索和筛选功能
+  - 排序功能
+  - 自动刷新
+  - 支持 HTML 和 JSON 两种响应格式
+
+## 快速开始
+
+### 安装
+
+```bash
+npm install n8n-nodes-vars-pro
+```
+
+### 使用工作流模板
+
+我们提供了一个完整的工作流模板，你可以直接导入使用：
+
+1. 在 n8n 中，点击 **Workflows** → **Import from File**
+2. 选择 `templates/vars-pro-viewer-template.json` 文件
+3. 导入后，工作流会自动创建所有必要的节点
+4. 激活工作流，访问 Webhook URL 即可查看数据
+
+**模板包含：**
+- Webhook 节点（接收请求）
+- Vars Pro Viewer 节点（生成 HTML 页面）
+- If 节点（根据 Accept 头判断返回格式）
+- Respond to Webhook 节点（返回响应）
+
+详细说明请查看 [templates/README.md](templates/README.md)
+
+---
+
+## 开发指南
+
+This repository helps you build custom integrations for [n8n](https://n8n.io). It includes example nodes, credentials, the node linter, and all the tooling you need to get started.
 
 ## Quick Start
 

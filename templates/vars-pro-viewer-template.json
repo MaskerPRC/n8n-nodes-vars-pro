@@ -1,0 +1,169 @@
+{
+  "name": "Vars Pro Viewer Template",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-vars-pro.varsProViewer",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -640
+      ],
+      "id": "84d4385d-a646-4602-9d37-11a6af9c26ee",
+      "name": "Vars Pro Viewer",
+      "webhookId": "fb99f6cd-9f1a-4630-a403-58fa9a421389"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        832,
+        -544
+      ],
+      "id": "ef945bda-ea0d-4e99-8656-4f407655644b",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "path": "16a56ce1-0798-4961-9723-95ed70495f88",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -112,
+        -640
+      ],
+      "id": "2f0c3e37-0de8-446a-b783-f0e67311d83b",
+      "name": "Webhook",
+      "webhookId": "16a56ce1-0798-4961-9723-95ed70495f88"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "35e3c4ba-cd6b-4f67-ac34-418f21cb6b71",
+              "leftValue": "={{ $('Webhook').item.json.headers.accept }}",
+              "rightValue": "application/json",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        -640
+      ],
+      "id": "d8accef7-30a1-4636-a36b-449b984c2de4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $('Vars Pro Viewer').item.json.data }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        832,
+        -784
+      ],
+      "id": "3bdee0c7-2069-4c57-b7f2-75707392a992",
+      "name": "Respond to Webhook1"
+    }
+  ],
+  "connections": {
+    "Vars Pro Viewer": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Vars Pro Viewer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-11-23T00:00:00.000Z",
+  "versionId": "1"
+}
+

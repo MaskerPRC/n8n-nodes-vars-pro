@@ -15,14 +15,14 @@ import {
 
 export class LocalDataStorage implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Local Data Storage',
-		name: 'localDataStorage',
+		displayName: 'Vars Pro Storage',
+		name: 'varsProStorage',
 		icon: 'file:storage.svg',
 		group: ['transform'],
 		version: 1,
-		description: '存储和读取本地JSON文件数据',
+		description: 'Vars Pro - 存储和读取本地JSON文件数据（执行级别和工作流级别）',
 		defaults: {
-			name: 'Local Data Storage',
+			name: 'Vars Pro Storage',
 		},
 		inputs: [NodeConnectionTypes.Main],
 		outputs: [NodeConnectionTypes.Main],
