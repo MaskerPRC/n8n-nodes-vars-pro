@@ -2,10 +2,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type { IDataObject } from 'n8n-workflow';
 
-const DATA_BASE_DIR = process.env.N8N_DATA_DIR || path.join(process.cwd(), '.n8n-data');
+const DATA_BASE_DIR = process.env.N8N_DATA_DIR || path.join(process.env.HOME || process.env.USERPROFILE || process.cwd(), '.n8n', 'varsProData');
 
 /**
- * 获取工作流级别的数据文件路径
+ * Get workflow data path
  */
 export function getWorkflowDataPath(workflowId: string): string {
 	const workflowDir = path.join(DATA_BASE_DIR, 'workflows', workflowId);
@@ -16,7 +16,7 @@ export function getWorkflowDataPath(workflowId: string): string {
 }
 
 /**
- * 获取执行级别的数据文件路径
+ * Get execution data path
  */
 export function getExecutionDataPath(workflowId: string, executionId: string): string {
 	const workflowDir = path.join(DATA_BASE_DIR, 'workflows', workflowId);
@@ -27,7 +27,7 @@ export function getExecutionDataPath(workflowId: string, executionId: string): s
 }
 
 /**
- * 读取JSON文件
+ * Read JSON file
  */
 export function readJsonFile(filePath: string): IDataObject {
 	try {
@@ -37,12 +37,12 @@ export function readJsonFile(filePath: string): IDataObject {
 		const content = fs.readFileSync(filePath, 'utf-8');
 		return JSON.parse(content) as IDataObject;
 	} catch (error) {
-		throw new Error(`读取文件失败: ${filePath}, 错误: ${error}`);
+		throw new Error(`Failed to read file: ${filePath}, Error: ${error}`);
 	}
 }
 
 /**
- * 写入JSON文件
+ * Write JSON file
  */
 export function writeJsonFile(filePath: string, data: IDataObject): void {
 	try {
@@ -52,12 +52,12 @@ export function writeJsonFile(filePath: string, data: IDataObject): void {
 		}
 		fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
 	} catch (error) {
-		throw new Error(`写入文件失败: ${filePath}, 错误: ${error}`);
+		throw new Error(`Failed to write file: ${filePath}, Error: ${error}`);
 	}
 }
 
 /**
- * 删除文件
+ * Delete file
  */
 export function deleteFile(filePath: string): boolean {
 	try {
@@ -67,12 +67,12 @@ export function deleteFile(filePath: string): boolean {
 		}
 		return false;
 	} catch (error) {
-		throw new Error(`删除文件失败: ${filePath}, 错误: ${error}`);
+		throw new Error(`Failed to delete file: ${filePath}, Error: ${error}`);
 	}
 }
 
 /**
- * 设置数据到JSON文件（支持嵌套路径）
+ * Set data in JSON file (supports nested paths)
  */
 export function setDataInJson(
 	filePath: string,
@@ -101,7 +101,7 @@ export function setDataInJson(
 }
 
 /**
- * 从JSON文件读取数据（支持嵌套路径）
+ * Get data from JSON file (supports nested paths)
  */
 export function getDataFromJson(filePath: string, key?: string): any {
 	const data = readJsonFile(filePath);
@@ -125,7 +125,7 @@ export function getDataFromJson(filePath: string, key?: string): any {
 }
 
 /**
- * 从JSON文件删除数据（支持嵌套路径）
+ * Delete data from JSON file (supports nested paths)
  */
 export function deleteDataFromJson(filePath: string, key: string): IDataObject {
 	const data = readJsonFile(filePath);

@@ -19,7 +19,7 @@ export class LocalDataViewer implements INodeType {
 		icon: 'file:viewer.svg',
 		group: ['transform'],
 		version: 1,
-		description: 'Vars Pro - 生成查看本地JSON文件数据的HTML页面（支持轮询刷新）。配合Webhook节点使用，在HTTP Response节点中返回 $json.html',
+		description: 'Vars Pro - Generate HTML page to view local JSON file data (Supports polling refresh). Use with Webhook node, return $json.html in HTTP Response node',
 		defaults: {
 			name: 'Vars Pro Viewer',
 		},
@@ -27,42 +27,42 @@ export class LocalDataViewer implements INodeType {
 		outputs: [NodeConnectionTypes.Main],
 		properties: [
 			{
-				displayName: '数据类型',
+				displayName: 'Data Type',
 				name: 'dataType',
 				type: 'options',
 				options: [
 					{
-						name: '执行级别数据',
+						name: 'Execution Level Data',
 						value: 'execution',
-						description: '显示所有执行级别的JSON文件',
+						description: 'Display all execution level JSON files',
 					},
 					{
-						name: '工作流级别数据',
+						name: 'Workflow Level Data',
 						value: 'workflow',
-						description: '显示工作流级别的JSON文件',
+						description: 'Display workflow level JSON file',
 					},
 					{
-						name: '全部数据',
+						name: 'All Data',
 						value: 'all',
-						description: '显示所有数据',
+						description: 'Display all data',
 					},
 				],
 				default: 'all',
-				description: '选择要查看的数据类型',
+				description: 'Select data type to view',
 			},
 			{
-				displayName: '轮询间隔（秒）',
+				displayName: 'Poll Interval (Seconds)',
 				name: 'pollInterval',
 				type: 'number',
 				default: 5,
-				description: '前端页面自动刷新的间隔时间（秒）',
+				description: 'Interval in seconds for the frontend page to automatically refresh',
 			},
 			{
-				displayName: '允许查看',
+				displayName: 'Allow View',
 				name: 'allowView',
 				type: 'boolean',
 				default: true,
-				description: '是否允许通过Webhook查看数据',
+				description: 'Whether to allow viewing data',
 			},
 		],
 		usableAsTool: true,
@@ -80,7 +80,7 @@ export class LocalDataViewer implements INodeType {
 				if (!allowView) {
 					returnData.push({
 						json: {
-							error: '查看功能已禁用',
+							error: 'View function is disabled',
 						},
 						pairedItem: { item: itemIndex },
 					});
@@ -89,7 +89,7 @@ export class LocalDataViewer implements INodeType {
 
 				const workflow = this.getWorkflow();
 				const workflowId = workflow.id || 'default';
-				const DATA_BASE_DIR = process.env.N8N_DATA_DIR || path.join(process.cwd(), '.n8n-data');
+				const DATA_BASE_DIR = process.env.N8N_DATA_DIR || path.join(process.env.HOME || process.env.USERPROFILE || process.cwd(), '.n8n', 'varsProData');
 				const workflowDir = path.join(DATA_BASE_DIR, 'workflows', workflowId);
 
 				const data: any = {};
@@ -129,9 +129,9 @@ export class LocalDataViewer implements INodeType {
 
 				const pollInterval = (this.getNodeParameter('pollInterval', itemIndex, 5) as number) || 5;
 
-				// 生成HTML页面，使用新的表格设计
+				// Generate HTML page with new table design
 				const html = `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -144,7 +144,7 @@ export class LocalDataViewer implements INodeType {
             --text-main: #1e293b;
             --text-sub: #64748b;
             --hover-bg: #f1f5f9;
-            --code-bg: #1e293b; /* 深色代码块 */
+            --code-bg: #1e293b; /* Dark code block */
             --code-text: #e2e8f0;
         }
 
@@ -362,7 +362,7 @@ export class LocalDataViewer implements INodeType {
         <div class="status-bar">
             <div style="display:flex; align-items:center; gap:6px;">
                 <div class="live-dot"></div>
-                <span>自动刷新 (${pollInterval}s)</span>
+                <span>Auto Refresh (${pollInterval}s)</span>
             </div>
             <span style="color:#cbd5e1">|</span>
             <span id="lastUpdate">--:--:--</span>
@@ -377,10 +377,10 @@ export class LocalDataViewer implements INodeType {
     <div class="toolbar">
         <div class="search-wrapper">
             <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="筛选执行 ID 或 变量内容..." onkeyup="applyFilter()">
+            <input type="text" id="searchInput" placeholder="Filter by Execution ID or content..." onkeyup="applyFilter()">
         </div>
-        <button class="btn" onclick="copyAllData()">📋 复制 JSON</button>
-        <button class="btn btn-primary" onclick="manualRefresh()">🔄 刷新</button>
+        <button class="btn" onclick="copyAllData()">📋 Copy JSON</button>
+        <button class="btn btn-primary" onclick="manualRefresh()">🔄 Refresh</button>
     </div>
 
     <div class="table-container">
@@ -392,7 +392,7 @@ export class LocalDataViewer implements INodeType {
                 <!-- Dynamic Rows -->
             </tbody>
         </table>
-        <div id="emptyMsg" class="empty-state" style="display:none;">暂无数据或无匹配结果</div>
+        <div id="emptyMsg" class="empty-state" style="display:none;">No data or no matching results</div>
     </div>
 
     <script>
@@ -461,7 +461,7 @@ export class LocalDataViewer implements INodeType {
                 thead.innerHTML = '';
                 tbody.innerHTML = '';
                 emptyMsg.style.display = 'block';
-                emptyMsg.textContent = '暂无执行记录';
+                emptyMsg.textContent = 'No execution records';
                 return;
             }
 
@@ -563,7 +563,7 @@ export class LocalDataViewer implements INodeType {
         function copyAllData() {
             const str = JSON.stringify(currentData, null, 2);
             navigator.clipboard.writeText(str).then(() => {
-                alert('完整 JSON 数据已复制到剪贴板');
+                alert('Full JSON data copied to clipboard');
             });
         }
 

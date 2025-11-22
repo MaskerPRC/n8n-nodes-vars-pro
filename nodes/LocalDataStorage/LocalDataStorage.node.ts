@@ -20,7 +20,7 @@ export class LocalDataStorage implements INodeType {
 		icon: 'file:storage.svg',
 		group: ['transform'],
 		version: 1,
-		description: 'Vars Pro - 存储和读取本地JSON文件数据（执行级别和工作流级别）',
+		description: 'Vars Pro - Store and read local JSON file data (Execution & Workflow Level)',
 		defaults: {
 			name: 'Vars Pro Storage',
 		},
@@ -28,53 +28,53 @@ export class LocalDataStorage implements INodeType {
 		outputs: [NodeConnectionTypes.Main],
 		properties: [
 			{
-				displayName: '操作',
+				displayName: 'Operation',
 				name: 'operation',
 				type: 'options',
 				noDataExpression: true,
 				options: [
 					{
-						name: '设置数据',
+						name: 'Set Data',
 						value: 'set',
-						description: '设置数据到JSON文件',
-						action: '设置数据到JSON文件',
+						description: 'Set data in JSON file',
+						action: 'Set data in JSON file',
 					},
 					{
-						name: '读取数据',
+						name: 'Get Data',
 						value: 'get',
-						description: '从JSON文件读取数据',
-						action: '从JSON文件读取数据',
+						description: 'Get data from JSON file',
+						action: 'Get data from JSON file',
 					},
 					{
-						name: '删除数据',
+						name: 'Delete Data',
 						value: 'delete',
-						description: '从JSON文件删除数据',
-						action: '从JSON文件删除数据',
+						description: 'Delete data from JSON file',
+						action: 'Delete data from JSON file',
 					},
 				],
 				default: 'set',
 			},
 			{
-				displayName: '数据类型',
+				displayName: 'Data Type',
 				name: 'dataType',
 				type: 'options',
 				options: [
 					{
-						name: '执行级别数据',
+						name: 'Execution Level',
 						value: 'execution',
-						description: '每个执行创建独立的JSON文件（以执行ID命名）',
+						description: 'Creates independent JSON file for each execution (named by execution ID)',
 					},
 					{
-						name: '工作流级别数据',
+						name: 'Workflow Level',
 						value: 'workflow',
-						description: '工作流共享的JSON文件（以工作流ID命名）',
+						description: 'Shared JSON file for the workflow (named by workflow ID)',
 					},
 				],
 				default: 'execution',
-				description: '选择要操作的数据类型',
+				description: 'Select data type to operate on',
 			},
 			{
-				displayName: '数据键',
+				displayName: 'Key',
 				name: 'key',
 				type: 'string',
 				default: '',
@@ -84,10 +84,10 @@ export class LocalDataStorage implements INodeType {
 						operation: ['set', 'delete'],
 					},
 				},
-				description: '数据的键名（支持嵌套路径，如 "user.name"）',
+				description: 'Key name (supports nested paths, e.g. "user.name")',
 			},
 			{
-				displayName: '数据键',
+				displayName: 'Key',
 				name: 'key',
 				type: 'string',
 				default: '',
@@ -97,10 +97,10 @@ export class LocalDataStorage implements INodeType {
 						operation: ['get'],
 					},
 				},
-				description: '数据的键名（支持嵌套路径，如 "user.name"）。留空则返回所有数据',
+				description: 'Key name (supports nested paths, e.g. "user.name"). Leave empty to get all data.',
 			},
 			{
-				displayName: '数据值',
+				displayName: 'Value',
 				name: 'value',
 				type: 'string',
 				default: '',
@@ -110,21 +110,21 @@ export class LocalDataStorage implements INodeType {
 						operation: ['set'],
 					},
 				},
-				description: '要设置的数据值（支持表达式）',
+				description: 'Value to set (supports expressions)',
 			},
 			{
-				displayName: '选项',
+				displayName: 'Options',
 				name: 'options',
 				type: 'collection',
-				placeholder: '添加选项',
+				placeholder: 'Add Option',
 				default: {},
 				options: [
 					{
-						displayName: '自动创建文件',
+						displayName: 'Auto Create File',
 						name: 'autoCreate',
 						type: 'boolean',
 						default: true,
-						description: '如果文件不存在，是否自动创建',
+						description: 'Whether to automatically create file if it does not exist',
 					},
 				],
 			},
@@ -142,12 +142,12 @@ export class LocalDataStorage implements INodeType {
 				const dataType = this.getNodeParameter('dataType', itemIndex) as 'execution' | 'workflow';
 				const key = this.getNodeParameter('key', itemIndex, '') as string;
 
-				// 获取工作流ID和执行ID
+				// Get workflow ID and execution ID
 				const workflow = this.getWorkflow();
 				const workflowId = workflow.id || 'default';
 				const executionId = this.getExecutionId() || `exec-${Date.now()}`;
 
-				// 确定文件路径
+				// Determine file path
 				let filePath: string;
 				if (dataType === 'workflow') {
 					filePath = getWorkflowDataPath(workflowId);
@@ -160,8 +160,8 @@ export class LocalDataStorage implements INodeType {
 				switch (operation) {
 					case 'set': {
 						const value = this.getNodeParameter('value', itemIndex);
-						// 如果value已经是对象或数组，直接使用
-						// 如果是字符串，尝试解析为JSON，如果失败则作为字符串处理
+						// If value is already object or array, use it directly
+						// If string, try to parse as JSON, fallback to string if failed
 						let parsedValue: any = value;
 						if (typeof value === 'string' && value !== null && value !== undefined) {
 							const trimmed = value.trim();
@@ -169,7 +169,7 @@ export class LocalDataStorage implements INodeType {
 								try {
 									parsedValue = JSON.parse(value);
 								} catch {
-									// 不是有效的JSON，保持原字符串值
+									// Not valid JSON, keep as string
 									parsedValue = value;
 								}
 							}
@@ -189,12 +189,12 @@ export class LocalDataStorage implements INodeType {
 					default:
 						throw new NodeOperationError(
 							this.getNode(),
-							`不支持的操作: ${operation}`,
+							`Unsupported operation: ${operation}`,
 							{ itemIndex },
 						);
 				}
 
-				// 返回结果
+				// Return result
 				returnData.push({
 					json: {
 						operation,
