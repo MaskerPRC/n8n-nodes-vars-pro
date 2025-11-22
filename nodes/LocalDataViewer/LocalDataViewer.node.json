@@ -1,0 +1,14 @@
+{
+	"node": "n8n-nodes-local-data-viewer",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Trigger"],
+	"resources": {
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/org/repo?tab=readme-ov-file"
+			}
+		]
+	}
+}
+
